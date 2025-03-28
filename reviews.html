@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - KDL Rent-a-Car</title>
+    <link rel="stylesheet" href="nav.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="home.html" class="logo"><img src="img/DensLogo.jpg" alt="Logo"></a>
+        <ul class="navbar">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="learnhow.html">Learn How</a></li>
+            <li><a href="vehicles.html">Vehicles</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="form.html">Reservation Form</a></li> 
+        </ul>
+    </header>
+
+    <!-- Review Form -->
+    <section class="review-form">
+        <h2>Review Our Service</h2>
+        <form id="reviewForm">
+            <div class="input-box">
+                <label>Name</label>
+                <input type="text" id="name" placeholder="Enter your name" required>
+            </div>
+            <div class="input-box">
+                <label>Rating</label>
+                <select id="rating">
+                    <option value="5">5 - Excellent</option>
+                    <option value="4">4 - Very Good</option>
+                    <option value="3">3 - Good</option>
+                    <option value="2">2 - Fair</option>
+                    <option value="1">1 - Poor</option>
+                </select>
+            </div>
+            <div class="input-box">
+                <label>Review</label>
+                <textarea id="review" placeholder="Write your review here..." required></textarea>
+            </div>
+            <button type="submit" class="btn">Submit Review</button>
+        </form>
+    </section>
+
+    <script>
+        document.getElementById('reviewForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const name = document.getElementById('name').value;
+            const rating = document.getElementById('rating').value;
+            const review = document.getElementById('review').value;
+
+            const reviewData = { name, rating, review };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/reviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reviewData),
+                });
+
+                if (response.ok) {
+                    alert('Review submitted successfully!');
+                    window.location.href = "home.html"; // Redirect to home page
+                } else {
+                    alert('Failed to submit review.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error submitting review.');
+            }
+        });
+    </script>
+</body>
+</html>

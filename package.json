@@ -1,0 +1,28 @@
+{
+    "name": "adminlogin",
+    "version": "1.0.0",
+    "description": "Login system with MongoDB",
+    "main": "Mongodb.js",
+    "scripts": {
+        "start": "node Mongodb.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "bcryptjs": "^3.0.2",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "mongoose": "^8.12.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Soda02484/CapstoneProject.git"
+    },
+    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/Soda02484/CapstoneProject/issues"
+    },
+    "homepage": "https://github.com/Soda02484/CapstoneProject#readme",
+    "devDependencies": {}
+}

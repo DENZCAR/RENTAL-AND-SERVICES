@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Form - KDL Rent-a-Car</title>
+    <link rel="stylesheet" href="nav.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            text-align: center;
+        }
+        .close {
+            color: red;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="home.html" class="logo"><img src="img/DensLogo.jpg" alt="Logo"></a>
+        <div class="bx bx-menu" id="menu-icon"></div>
+        <ul class="navbar">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="learnhow.html">Learn How</a></li>
+            <li><a href="vehicles.html">Vehicles</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="form.html">Reservation Form</a></li> 
+
+        </ul>
+    </header>
+
+    <section class="form-section">
+        <form id="reservationForm">
+            <div class="input-box">
+                <span>Location</span>
+                <input type="search" name="location" id="location" placeholder="Destination" required>
+            </div>
+            <div class="input-box">
+                <span>Name</span>
+                <input type="text" name="name" id="name" placeholder="Full Name" required>
+            </div>
+            <div class="input-box">
+                <span>Gender</span>
+                <select name="gender" id="gender" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            
+            <div class="input-box">
+                <span>Age</span>
+                <input type="number" name="age" id="age" required>
+            </div>
+            <div class="input-box">
+                <span>Phone</span>
+                <input type="text" name="phone" id="phone" placeholder="+63XXXXXXXXXX" required oninput="if (!this.value.startsWith('+63')) this.value = '+63';">
+            </div>            
+            <div class="input-box">
+                <span>Vehicle</span>
+                <select id="vehicle" required>
+                    <option value="Mitsubishi Montero Sport">Mitsubishi Montero Sport</option>
+                    <option value="Toyota Hilux 2.8 GR Sport">Toyota Hilux 2.8 GR Sport</option>
+                    <option value="Toyota Vios">Toyota Vios</option>
+                    <option value="Toyota Cargo Van">Toyota Cargo Van</option>
+                </select>
+            </div>        
+            <div class="input-box">
+                <input type="radio" id="WithOutDriver" name="Driver" value="Without Driver" required>
+                <label for="WithOutDriver">Without Driver</label>
+                <input type="radio" id="WithDriver" name="Driver" value="With Driver">
+                <label for="WithDriver">With Driver</label>
+            </div>
+            <style>
+                .container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+                .input-box {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                .input-box span {
+                    width: 120px;
+                    text-align: right;
+                }
+                select, input {
+                    margin-top: 5px;
+                }
+            </style>
+            
+            <div class="input-box">
+                <span>Pick-up Date</span>
+                <input type="date" id="pickupDate" required>
+                <select id="pickupHour" required>
+                    <option value="">Hour</option>
+                    <script>
+                        for (let i = 1; i <= 24; i++) {
+                            document.write(`<option value="${i.toString().padStart(2, '0')}">${i.toString().padStart(2, '0')}</option>`);
+                        }
+                    </script>
+                </select>
+                <select id="pickupMinute" required>
+                    <option value="">Minute</option>
+                    <script>
+                        for (let i = 0; i < 60; i += 5) {
+                            document.write(`<option value="${i.toString().padStart(2, '0')}">${i.toString().padStart(2, '0')}</option>`);
+                        }
+                    </script>
+                </select>
+                <select id="pickupAMPM" required>
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+            </div>
+            
+            <div class="input-box">
+                <span>Return Date</span>
+                <input type="date" id="returnDate" required>
+                <select id="returnHour" required>
+                    <option value="">Hour</option>
+                    <script>
+                        for (let i = 1; i <= 24; i++) {
+                            document.write(`<option value="${i.toString().padStart(2, '0')}">${i.toString().padStart(2, '0')}</option>`);
+                        }
+                    </script>
+                </select>
+                <select id="returnMinute" required>
+                    <option value="">Minute</option>
+                    <script>
+                        for (let i = 0; i < 60; i += 5) {
+                            document.write(`<option value="${i.toString().padStart(2, '0')}">${i.toString().padStart(2, '0')}</option>`);
+                        }
+                    </script>
+                </select>
+                <select id="returnAMPM" required>
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+            </div>         
+            <input type="submit" class="btn" value="Submit">
+            
+        </form>
+    </section>
+
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="result"></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let reservationData = null; // Hold data temporarily until confirmed
+    
+            document.getElementById('reservationForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Stop default submission
+    
+                console.log("Form submitted - Data is NOT sent yet."); // Debug log
+    
+                // Collect form data
+                reservationData = {
+    location: document.getElementById('location').value,
+    name: document.getElementById('name').value,
+    gender: document.getElementById('gender').value,
+    age: parseInt(document.getElementById('age').value),
+    phone: document.getElementById('phone').value,
+    vehicle: document.getElementById('vehicle').value,
+    driverChoice: document.querySelector('input[name="Driver"]:checked')?.value || 'Without Driver',
+    pickupDate: document.getElementById('pickupDate').value,
+    pickupHour: document.getElementById('pickupHour').value,
+    pickupMinute: document.getElementById('pickupMinute').value,
+    pickupAMPM: document.getElementById('pickupAMPM').value,
+    returnDate: document.getElementById('returnDate').value,
+    returnHour: document.getElementById('returnHour').value,
+    returnMinute: document.getElementById('returnMinute').value,
+    returnAMPM: document.getElementById('returnAMPM').value
+
+                };
+    
+                // Calculate rental duration and cost
+                const pickupDate = new Date(reservationData.pickupDate);
+                const returnDate = new Date(reservationData.returnDate);
+                const pickupDateTime = new Date(`${reservationData.pickupDate} ${reservationData.pickupHour}:${reservationData.pickupMinute} ${reservationData.pickupAMPM}`);
+const returnDateTime = new Date(`${reservationData.returnDate} ${reservationData.returnHour}:${reservationData.returnMinute} ${reservationData.returnAMPM}`);
+
+const timeDiff = returnDateTime - pickupDateTime;
+reservationData.rentalHours = Math.max(timeDiff / (1000 * 60 * 60), 1);
+
+    
+                const vehicleRates = {
+                    "Mitsubishi Montero Sport": 400,
+                    "Toyota Hilux 2.8 GR Sport": 550,
+                    "Toyota Vios": 350,
+                    "Toyota Cargo Van": 300
+                };
+    
+                reservationData.totalCost = (vehicleRates[reservationData.vehicle]) * reservationData.rentalHours;
+
+                
+    
+                // Show receipt modal
+                document.getElementById('result').innerHTML = `
+    <h3>Booking Receipt:</h3>
+    <p><strong>Location:</strong> ${reservationData.location}</p>
+    <p><strong>Name:</strong> ${reservationData.name}</p>
+    <p><strong>Gender:</strong> ${reservationData.gender}</p>
+    <p><strong>Age:</strong> ${reservationData.age}</p>
+    <p><strong>Phone:</strong> ${reservationData.phone}</p>
+    <p><strong>Vehicle:</strong> ${reservationData.vehicle}</p>
+    <p><strong>Driver Option:</strong> ${reservationData.driverChoice}</p>
+    <p><strong>Pick-up Date:</strong> ${reservationData.pickupDate} ${reservationData.pickupHour}:${reservationData.pickupMinute} ${reservationData.pickupAMPM}</p>
+    <p><strong>Return Date:</strong> ${reservationData.returnDate} ${reservationData.returnHour}:${reservationData.returnMinute} ${reservationData.returnAMPM}</p>
+    <p><strong>Rental Duration:</strong> ${reservationData.rentalHours.toFixed(2)} hours</p>
+    <p><strong>Total Cost:</strong> PHP ${reservationData.totalCost.toFixed(2)}</p>
+    <button type="button" id="backButton">Back</button>
+    <button type="button" id="confirmBookingBtn">OK</button>
+`;
+
+                document.getElementById('bookingModal').style.display = 'block';
+
+                document.getElementById("backButton").addEventListener("click", function () {
+                    closeModal();
+                    });
+                
+                // Attach event listener to OK button
+                document.getElementById("confirmBookingBtn").addEventListener("click", function () {
+                    confirmBooking()
+    if (event.target.id === "confirmBookingBtn") {
+        confirmBooking();
+    }
+});
+
+
+            });
+    
+            function closeModal() {
+    document.getElementById('bookingModal').style.display = 'none';
+}
+    
+            async function confirmBooking() {
+                if (!reservationData) return;
+    
+                console.log("Sending reservation to database..."); // Debug log
+    
+                try {
+                    const response = await fetch('http://localhost:5000/api/reservations', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(reservationData)
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error('Failed to save reservation');
+                    }
+    
+                    console.log("Reservation saved successfully:", result);
+
+                    alert("Booking confirmed! Redirecting to reviews page...");
+                    window.location.href = 'reviews.html';
+                    
+                } catch (error) {
+                    console.error("Error saving reservation:", error);
+                    alert("Booking date for chosen car unavailable. Please select another date.");
+                }
+            }
+        });
+    </script>
+    
+    </body>
+</html>

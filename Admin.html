@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - KDL Rent-a-Car</title>
+    <link rel="stylesheet" href="nav.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #474fa0;
+            color: white;
+        }
+        .btn {
+            padding: 5px 10px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .unavailable {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+        
+        <h3>Manage Vehicle Availability</h3>
+        <table id="vehiclesTable">
+            <tr>
+                <th>Vehicle</th>
+                <th>Price Per Hour</th>
+                <th>Availability</th>
+                <th>Action</th>
+            </tr>
+        </table>
+
+        <h3>Reservations</h3>
+        <table id="reservationsTable">
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Vehicle</th>
+                <th>Pick-up Date</th>
+                <th>Return Date</th>
+                <th>Action</th>
+            </tr>
+        </table>
+
+        <h3>Customer Reviews</h3>
+        <table id="reviewsTable">
+            <tr>
+                <th>Name</th>
+                <th>Rating</th>
+                <th>Review</th>
+                <th>Action</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        async function fetchVehicles() {
+            let response = await fetch('http://localhost:5000/vehicles'); // Adjust API endpoint
+            let vehicles = await response.json();
+            let table = document.getElementById("vehiclesTable");
+            
+            vehicles.forEach((vehicle) => {
+                let row = table.insertRow();
+                row.innerHTML = `
+                    <td>${vehicle.name}</td>
+                    <td>₱${vehicle.pricePerHour}/hour</td>
+                    <td class="${vehicle.availability ? '' : 'unavailable'}">
+                        ${vehicle.availability ? 'Available' : 'Not Available'}
+                    </td>
+                    <td>
+                        <button class='btn' onclick='toggleAvailability("${vehicle._id}", ${vehicle.availability})'>
+                            ${vehicle.availability ? 'Mark Unavailable' : 'Mark Available'}
+                        </button>
+                    </td>
+                `;
+            });
+        }
+
+        async function toggleAvailability(vehicleId, currentStatus) {
+            let newStatus = !currentStatus;
+            await fetch(`http://localhost:5000/admin/update-availability/${vehicleId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ availability: newStatus })
+            });
+            location.reload();
+        }
+
+        async function fetchReservations() {
+            let response = await fetch('http://localhost:5000/reservations');
+            let reservations = await response.json();
+            let table = document.getElementById("reservationsTable");
+            
+            reservations.forEach((res) => {
+                let row = table.insertRow();
+                row.innerHTML = `
+                    <td>${res.name}</td>
+                    <td>${res.phone}</td>
+                    <td>${res.vehicle}</td>
+                    <td>${res.pickup}</td>
+                    <td>${res.returnDate}</td>
+                    <td><button class='btn' onclick='deleteReservation("${res._id}")'>Delete</button></td>
+                `;
+            });
+        }
+
+        async function fetchReviews() {
+            let response = await fetch('http://localhost:5000/reviews');
+            let reviews = await response.json();
+            let table = document.getElementById("reviewsTable");
+            
+            reviews.forEach((rev) => {
+                let row = table.insertRow();
+                row.innerHTML = `
+                    <td>${rev.name}</td>
+                    <td>${rev.rating}</td>
+                    <td>${rev.review}</td>
+                    <td><button class='btn' onclick='deleteReview("${rev._id}")'>Delete</button></td>
+                `;
+            });
+        }
+
+        async function deleteReservation(reservationId) {
+            await fetch(`http://localhost:5000/admin/delete-reservation/${reservationId}`, {
+                method: 'DELETE'
+            });
+            location.reload();
+        }
+
+        async function deleteReview(reviewId) {
+            await fetch(`http://localhost:5000/admin/delete-review/${reviewId}`, {
+                method: 'DELETE'
+            });
+            location.reload();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchVehicles();
+            fetchReservations();
+            fetchReviews();
+        });
+    </script>
+</body>
+</html>

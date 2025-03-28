@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log-in-Form</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="container">
+        <form id="loginForm">
+            <label for="FullName">Name: </label>
+            <input type="text" id="FullName" name="FullName" required>
+
+            <label for="PhoneNumber">Phone Number: </label>
+            <input type="text" name="phone" id="phone" placeholder="+63XXXXXXXXXX" required oninput="if (!this.value.startsWith('+63')) this.value = '+63';">
+            <small id="phoneError" style="color: red; display: none;">❌ Invalid phone number.</small>
+
+            <label for="gender">Gender: </label>
+            <select name="Gender" id="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <label for="Age">Age: </label>
+            <input type="number" id="Age" name="Age" required>
+
+            <label for="Password">Password: </label>
+            <input type="password" id="Password" name="Password" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const password = document.getElementById('Password').value;
+            const adminPassword = "admin123"; // Set your built-in admin password here
+            const phoneInput = document.getElementById('phone').value;
+            const phoneError = document.getElementById('phoneError');
+            const phoneRegex = /^\+63\d{10}$/; // Must start with +63 and be followed by exactly 10 digits
+
+            // Prevent form submission if phone number is invalid
+            if (!phoneRegex.test(phoneInput)) {
+                phoneError.style.display = 'block'; // Show error message
+                alert("❌ Invalid phone number.");
+                return; // Stops submission
+            } else {
+                phoneError.style.display = 'none'; // Hide error message if valid
+            }
+
+            if (password === adminPassword) {
+                alert("✅ Login successful!");
+                window.location.href = "Admin.html"; // Redirect to admin dashboard
+                return;
+            } else {
+                alert("❌ Incorrect password!");
+            }
+
+            // Simulating form submission to a backend
+            const formData = {
+                FullName: document.getElementById('FullName').value,
+                PhoneNumber: phoneInput,
+                Gender: document.getElementById('gender').value,
+                Age: document.getElementById('Age').value,
+                Password: password
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/post', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert("✅ User data saved!");
+                    document.getElementById('loginForm').reset();
+                    phoneError.style.display = 'none'; // Hide error message after successful submission
+                } else {
+                    alert("❌ Error saving user data");
+                }
+            } catch (error) {
+                alert("❌ Failed to connect to server!");
+            }
+        });
+    </script>
+</body>
+</html>
